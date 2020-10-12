@@ -16,33 +16,33 @@ const (
 // Metric
 type Metric struct {
 	Type     MetricType
-    Name     string
+	Name     string
 	Interval time.Duration
-    Samples  int
+	Samples  int
 	Value    *int64
-    history  *RingBuffer
+	history  *RingBuffer
 }
 
 func (m Metric) compute() int64 {
-    v := atomic.LoadInt64(m.Value)
+	v := atomic.LoadInt64(m.Value)
 
-    switch m.Type {
-    case Counter:
-        return v
-    case MovingAverage:
-        m.history.Queue(v)
+	switch m.Type {
+	case Counter:
+		return v
+	case MovingAverage:
+		m.history.Queue(v)
 
-        var c int64
+		var c int64
 
-        m.history.Iterate(func(hv int64) {
-            c = c + hv
-        })
+		m.history.Iterate(func(hv int64) {
+			c = c + hv
+		})
 
-        // reset the value/counter
-        atomic.AddInt64(m.Value, -v)
+		// reset the value/counter
+		atomic.AddInt64(m.Value, -v)
 
-        return c / int64(m.Samples)
-    }
+		return c / int64(m.Samples)
+	}
 
-    return v
+	return v
 }

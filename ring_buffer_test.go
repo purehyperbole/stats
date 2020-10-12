@@ -6,14 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 func TestRingBufferQueue(t *testing.T) {
-    b := NewRingBuffer(10)
+	b := NewRingBuffer(10)
 
-    for i := 0; i < 10; i++ {
-        b.Queue(int64(i))
+	for i := 0; i < 10; i++ {
+		b.Queue(int64(i))
 		assert.Equal(t, int64(i), b.values[i])
-    }
+	}
 
 	assert.Equal(t, 10, b.size)
 	assert.Equal(t, 0, b.head)

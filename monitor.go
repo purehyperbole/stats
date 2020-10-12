@@ -6,10 +6,10 @@ import (
 
 // Monitor monitors given values at different timeframes
 type Monitor struct {
-	interval time.Duration
-	metrics  []Metric
-    publishers []Publisher
-	stop     chan bool
+	interval   time.Duration
+	metrics    []Metric
+	publishers []Publisher
+	stop       chan bool
 }
 
 // NewMonitor creates a new monitor
@@ -36,7 +36,7 @@ func (m *Monitor) Track(metric Metric) {
 
 // AddPublisher adds a target to publish metrics to
 func (m *Monitor) AddPubisher(publisher Publisher) {
-    m.publishers = append(m.publishers, publisher)
+	m.publishers = append(m.publishers, publisher)
 }
 
 // Start starts the monitor
@@ -48,8 +48,8 @@ func (m *Monitor) Start() {
 				v := m.metrics[i].compute()
 				m.dispatch(m.metrics[i].Name, v)
 			}
-        case <-m.stop:
-            return
+		case <-m.stop:
+			return
 		}
 	}
 }
@@ -61,6 +61,6 @@ func (m *Monitor) Stop() {
 
 func (m *Monitor) dispatch(name string, metric int64) {
 	for _, p := range m.publishers {
-        p.Publish(name, metric)
-    }
+		p.Publish(name, metric)
+	}
 }
